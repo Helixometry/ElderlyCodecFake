@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ElderlyCodecFake: Detecting Neural Audio Codec Synthesized Elderly Speech Deepfakes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Source Sans 3', sans-serif; background: #fff; color: #2d2d2d; font-size: 17px; line-height: 1.7; }
+    a { color: #3273dc; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+    section { padding: 56px 0; }
+    section:nth-child(even) { background: #fafafa; }
+    hr { border: none; border-top: 1px solid #e8e8e8; margin: 0; }
+    .hero { padding: 72px 20px 56px; text-align: center; background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%); }
+    .venue-badge { display: inline-block; background: #f0f4ff; color: #3273dc; border: 1px solid #c8d8f8; border-radius: 999px; padding: 5px 16px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 22px; text-transform: uppercase; }
+    .paper-title { font-family: 'Source Serif 4', serif; font-size: clamp(1.85rem, 3.9vw, 2.9rem); font-weight: 700; line-height: 1.18; color: #111; max-width: 820px; margin: 0 auto 18px; }
+    .authors { font-size: 1rem; color: #2d2d2d; margin-bottom: 8px; line-height: 1.8; font-weight: 600; }
+    .authors sup { color: #3273dc; }
+    .affiliations { font-size: 0.9rem; color: #6b7280; margin-bottom: 10px; }
+    .hero-meta { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 28px; color: #6b7280; font-size: 0.84rem; }
+    .hero-meta span { display: inline-flex; align-items: center; gap: 8px; }
+    .hero-meta span:not(:last-child)::after { content: "|"; color: #b0b7c3; margin-left: 8px; }
+    .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 42px; }
+    .link-btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; border: 2px solid #222; color: #222; background: #fff; transition: background 0.15s, color 0.15s; text-decoration: none; }
+    .link-btn:hover { background: #222; color: #fff; text-decoration: none; }
+    .link-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .hero-stage { max-width: 980px; margin: 0 auto; }
+    .hero-intro { max-width: 760px; margin: 0 auto 28px; text-align: center; }
+    .hero-lead { font-size: 1.02rem; line-height: 1.8; color: #485264; margin-bottom: 18px; }
+    .hero-points { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; color: #5f6775; font-size: 0.9rem; }
+    .hero-point { position: relative; padding-left: 14px; }
+    .hero-point::before { content: ""; position: absolute; left: 0; top: 0.58rem; width: 6px; height: 6px; border-radius: 50%; background: #3273dc; }
+    .hero-figure { border: 1px solid #e5e7eb; border-radius: 18px; background: #fff; padding: 22px 24px 18px; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05); }
+    .figure-label { text-align: center; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #3273dc; margin-bottom: 16px; }
+    .pipeline { display: grid; grid-template-columns: 1fr 80px 1fr 80px 1.15fr; gap: 8px; align-items: center; }
+    .figure-box { border: 1px solid #d9dee8; border-radius: 12px; background: #fff; padding: 16px 14px; min-height: 180px; text-align: left; }
+    .figure-box.output-box { background: #fafcff; }
+    .figure-kicker { display: inline-block; margin-bottom: 8px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #3273dc; }
+    .figure-title { font-size: 1rem; font-weight: 700; color: #111; margin-bottom: 8px; }
+    .figure-text { font-size: 0.84rem; line-height: 1.6; color: #4b5563; }
+    .figure-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .figure-tag { display: inline-block; font-size: 0.71rem; padding: 3px 8px; border-radius: 999px; background: #f1f5f9; color: #506070; }
+    .arrow-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+    .arrow-line { width: 100%; height: 2px; background: linear-gradient(90deg, #cfd8e6 0%, #3273dc 100%); position: relative; }
+    .arrow-line::after { content: ""; position: absolute; right: -1px; top: -4px; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #3273dc; }
+    .arrow-text { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; color: #6b7280; text-transform: uppercase; text-align: center; }
+    .output-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .output-node { border: 1px solid #d8e0ee; border-radius: 10px; background: #fff; padding: 10px; }
+    .output-node-head { font-size: 0.71rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #3273dc; margin-bottom: 4px; }
+    .output-node-body { font-size: 0.8rem; color: #4b5563; line-height: 1.45; }
+    .figure-caption { font-size: 0.87rem; color: #5f6775; line-height: 1.7; max-width: 760px; margin: 16px auto 0; text-align: center; }
+    .section-heading { font-family: 'Source Serif 4', serif; font-size: 1.55rem; font-weight: 700; color: #111; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #111; }
+    .abstract-text { font-size: 0.97rem; line-height: 1.85; color: #333; max-width: 760px; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .tag { display: inline-block; padding: 3px 12px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; background: #f0f0f0; color: #444; }
+    .contrib-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .contrib-list li { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; font-size: 0.93rem; color: #333; }
+    .contrib-list li:hover { border-color: #3273dc; }
+    .contrib-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; font-weight: 700; color: #3273dc; }
+    .method-steps { display: flex; flex-direction: column; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden; margin-bottom: 28px; }
+    .method-step { display: flex; align-items: flex-start; gap: 16px; padding: 18px 22px; border-bottom: 1px solid #e8e8e8; background: #fff; font-size: 0.92rem; }
+    .method-step:last-child { border-bottom: none; }
+    .method-step:hover { background: #f8f9ff; }
+    .step-num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #3273dc; color: #fff; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+    .method-step h4 { font-size: 0.93rem; font-weight: 700; margin-bottom: 3px; color: #111; }
+    .method-step p { color: #555; line-height: 1.6; }
+    .eq-box { background: #f5f7fb; border-left: 3px solid #3273dc; border-radius: 0 6px 6px 0; padding: 14px 20px; font-size: 0.88rem; color: #333; margin: 16px 0; font-family: 'Courier New', monospace; overflow-x: auto; }
+    .method-figure { text-align: center; margin: 28px 0; }
+    .method-figure img { max-width: 100%; border: 1px solid #e8e8e8; border-radius: 10px; background: #fff; padding: 12px; }
+    .method-figure-caption { font-size: 0.85rem; color: #777; margin-top: 10px; }
+    .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-top: 20px; }
+    .comp-card, .ds-card { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; }
+    .comp-card .comp-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; color: #3273dc; text-transform: uppercase; margin-bottom: 6px; }
+    .comp-card h4, .ds-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; color: #111; }
+    .comp-card p, .ds-card p { font-size: 0.82rem; color: #666; line-height: 1.55; }
+    .results-note { font-size: 0.88rem; color: #666; margin-bottom: 16px; line-height: 1.6; }
+    .table-wrap, .sample-table-wrap { overflow-x: auto; margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    thead th { background: #f0f0f0; font-weight: 700; padding: 10px 12px; text-align: center; border: 1px solid #ddd; color: #222; white-space: nowrap; }
+    thead th:first-child { text-align: left; }
+    tbody td { padding: 9px 12px; text-align: center; border: 1px solid #e8e8e8; color: #444; vertical-align: middle; }
+    tbody td:first-child { text-align: left; font-weight: 600; color: #222; }
+    tbody tr:hover td { background: #f9f9f9; }
+    td.best { font-weight: 700; color: #1a7f3c; }
+    td.good { font-weight: 600; color: #3273dc; }
+    .table-caption { font-size: 0.82rem; color: #777; margin-top: 8px; line-height: 1.5; }
+    .ds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+    .ds-card .ds-lang { font-size: 0.75rem; font-weight: 700; color: #3273dc; margin-bottom: 6px; display: block; }
+    .ds-role { display: inline-block; margin-top: 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; }
+    .role-src { background: #e6f4ea; color: #1a7f3c; }
+    .role-codec { background: #eef4ff; color: #3273dc; }
+    audio { width: 180px; height: 34px; }
+    .condition-pill { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #eef4ff; color: #3273dc; font-size: 0.76rem; font-weight: 700; }
+    .missing { color: #999; font-size: 0.82rem; }
+    .bibtex-wrap { position: relative; background: #f5f5f5; border: 1px solid #ddd; border-radius: 8px; padding: 22px 24px; font-family: 'Courier New', monospace; font-size: 0.83rem; color: #333; line-height: 1.75; overflow-x: auto; }
+    .copy-btn { position: absolute; top: 12px; right: 12px; background: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600; cursor: pointer; color: #444; transition: all 0.15s; }
+    .copy-btn:hover { background: #3273dc; color: #fff; border-color: #3273dc; }
+    footer { background: #f5f5f5; border-top: 1px solid #e8e8e8; padding: 32px 20px; text-align: center; font-size: 0.83rem; color: #888; }
+    footer a { color: #3273dc; }
+    @media (max-width: 600px) {
+      .paper-title { font-size: 1.55rem; }
+      .hero-meta { display: flex; flex-direction: column; gap: 6px; }
+      .hero-meta span:not(:last-child)::after { display: none; }
+      .links { gap: 8px; }
+      .link-btn { padding: 7px 14px; font-size: 0.82rem; }
+      .pipeline { grid-template-columns: 1fr; }
+      .arrow-col { display: none; }
+      .output-pair { grid-template-columns: 1fr; }
+      audio { width: 150px; }
+    }
+  </style>
+</head>
+<body>
+<div class="hero">
+  <div class="venue-badge">Interspeech 2026</div>
+  <h1 class="paper-title">Bridging the Age Gap: Towards Detecting Neural Audio Codec Synthesized Elderly Speech Deepfake</h1>
+  <div class="authors">Orchid Chetia Phukan<sup>*</sup> &nbsp;&nbsp; Girish<sup>*</sup> &nbsp;&nbsp; Mohd Mujtaba Akhtar<sup>*</sup> &nbsp;&nbsp; Chi-Chun Lee</div>
+  <div class="affiliations"><sup>*</sup>Equal Contribution as First Author</div>
+  <div class="hero-meta">
+    <span>Elderly CodecFake Detection (ECFD)</span>
+    <span>Elderly-CodecFake (ECF) Dataset</span>
+    <span>BONSAI: JSD-based Foundation Model Fusion</span>
+  </div>
+  <div class="links">
+    <a class="link-btn" href="ElderlyCodecfake_INTERSPEECH26_Fixed.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Paper</a>
+    <a class="link-btn" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>Code (Coming Soon)</a>
+    <a class="link-btn" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Dataset (Coming Soon)</a>
+    <a class="link-btn" href="#samples"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 6 15 11 19 18 15 18 9 11 5"/><line x1="11" y1="12" x2="18" y2="9"/><line x1="11" y1="12" x2="11" y2="19"/><line x1="11" y1="12" x2="6" y2="9"/></svg>Audio Samples</a>
+  </div>
+  <div class="hero-stage">
+    <div class="hero-intro">
+      <p class="hero-lead">
+        Existing CodecFake detection benchmarks are built almost entirely on younger adult speakers, leaving older
+        adults vulnerable to neural-audio-codec-synthesized deepfakes. We introduce the Elderly CodecFake Detection
+        (ECFD) task and the Elderly-CodecFake (ECF) dataset, pairing authentic elderly speech with codec-resynthesized
+        counterparts, and propose BONSAI, a Jensen-Shannon Divergence based fusion of multimodal foundation models.
+      </p>
+      <div class="hero-points">
+        <div class="hero-point">English (TIS Corpus) and Chinese (SeniorTalk) elderly speech</div>
+        <div class="hero-point">14 neural audio codec variants across 8 codec families</div>
+        <div class="hero-point">Real and codec-synthesized paired samples for ECFD</div>
+      </div>
+    </div>
+
+    <div class="hero-figure">
+      <div class="figure-label">ECF Dataset Construction Pipeline</div>
+      <div class="pipeline">
+        <div class="figure-box">
+          <div class="figure-kicker">Input Audio</div>
+          <div class="figure-title">Real Elderly Speech</div>
+          <div class="figure-text">
+            Authentic recordings from older adults are sourced from publicly available elderly speech corpora across two languages and diverse age bands.
+          </div>
+          <div class="figure-tags">
+            <span class="figure-tag">SeniorTalk (Chinese, 75-85)</span>
+            <span class="figure-tag">TIS Corpus (English, 60+)</span>
+          </div>
+        </div>
+        <div class="arrow-col">
+          <div class="arrow-line"></div>
+          <div class="arrow-text">Encode-Decode</div>
+        </div>
+        <div class="figure-box">
+          <div class="figure-kicker">Codec Stage</div>
+          <div class="figure-title">Neural Audio Codec Resynthesis</div>
+          <div class="figure-text">
+            Each utterance is passed through the encoder-decoder of a neural audio codec, preserving linguistic content and speaker identity while introducing NAC-induced distortions.
+          </div>
+          <div class="figure-tags">
+            <span class="figure-tag">DAC</span>
+            <span class="figure-tag">EnCodec</span>
+            <span class="figure-tag">SoundStream</span>
+            <span class="figure-tag">SpeechTokenizer</span>
+            <span class="figure-tag">FunCodec</span>
+            <span class="figure-tag">AudioDec</span>
+            <span class="figure-tag">SNAC</span>
+            <span class="figure-tag">MIMI</span>
+          </div>
+        </div>
+        <div class="arrow-col">
+          <div class="arrow-line"></div>
+          <div class="arrow-text">Pairing</div>
+        </div>
+        <div class="figure-box output-box">
+          <div class="figure-kicker">Output Audio</div>
+          <div class="figure-title">Real and Spoof Paired Samples</div>
+          <div class="figure-text">
+            The ECF dataset retains the original elderly utterance together with its codec-generated counterpart for every NAC variant, for elderly-focused codec-fake detection.
+          </div>
+          <div class="output-pair">
+            <div class="output-node">
+              <div class="output-node-head">Real Audio</div>
+              <div class="output-node-body">Original elderly utterance</div>
+            </div>
+            <div class="output-node">
+              <div class="output-node-head">Spoof Audio</div>
+              <div class="output-node-body">NAC-resynthesized counterpart</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="figure-caption">
+        ECF comprises 60,749 real elderly utterances and 850,486 NAC-generated counterparts across 14 codec variants, English and Chinese.
+      </p>
+    </div>
+  </div>
+</div>
+<hr/>
+<section id="abstract"><div class="container"><h2 class="section-heading">Abstract</h2><p class="abstract-text">In this study, we introduce the <strong>Elderly CodecFake Detection (ECFD)</strong> task and release the <strong>Elderly-CodecFake (ECF)</strong> dataset in English and Chinese. We show that state-of-the-art CF detectors trained on previous benchmark CF datasets generalize poorly to elderly speech, revealing a critical vulnerability.</p><br/><p class="abstract-text">We further hypothesize and demonstrate that multimodal foundation models (FMs) such as LanguageBind (LB) and ImageBind (IB) are more effective for ECFD due to their exposure to elderly content during cross-modal pretraining. Motivated by prior evidence that fusion of FMs enhances downstream performance, we explore fusion of FMs for ECFD.</p><br/><p class="abstract-text">To this end, we propose <strong>BONSAI</strong>, a novel framework that employs Jensen-Shannon Divergence as the fusion mechanism. BONSAI with the fusion of LB and IB achieves an average EER (%) of <strong>1.66</strong> and outperforms individual FMs as well as competitive SOTA baselines, establishing a new benchmark for the ECFD task.</p><div class="tag-row"><span class="tag">CodecFake Detection</span><span class="tag">Speech Deepfake Detection</span><span class="tag">Elderly Speech</span><span class="tag">Multimodal Foundation Models</span><span class="tag">Jensen-Shannon Divergence</span><span class="tag">Interspeech 2026</span></div></div></section>
+<hr/>
+<section id="idea"><div class="container"><h2 class="section-heading">Key Contributions</h2><ul class="contrib-list"><li><div class="contrib-icon">1</div><div>We formalize the novel task of <strong>Elderly CodecFake Detection (ECFD)</strong> and introduce the <strong>ECF dataset</strong>, covering English and Chinese elderly speech.</div></li><li><div class="contrib-icon">2</div><div>We benchmark SOTA CF detectors trained on previous benchmark CF datasets and show substantial performance degradation on elderly speech, revealing poor cross-demographic robustness.</div></li><li><div class="contrib-icon">3</div><div>We show that multimodal FMs (LanguageBind, ImageBind) are best suited for ECFD compared to SOTA speech-only FMs (Wav2vec2, WavLM, Whisper).</div></li><li><div class="contrib-icon">4</div><div>We propose <strong>BONSAI</strong>, a novel framework that leverages Jensen-Shannon Divergence for fusion of FMs, achieving a new SOTA average EER of 1.66% with LanguageBind + ImageBind.</div></li></ul></div></section>
+<hr/>
+<section id="method"><div class="container"><h2 class="section-heading">Method</h2><p style="color:#444; margin-bottom:22px; font-size:0.95rem; line-height:1.8;">BONSAI (Bridging FusiON via JenSen-ShAnnon DIvergence) fuses representations from two foundation models for ECFD. Rather than relying on simple concatenation, BONSAI explicitly aligns the distributional characteristics of heterogeneous FM representations using Jensen-Shannon Divergence (JSD), encouraging the two representations to capture complementary yet consistent information.</p><div class="method-steps"><div class="method-step"><div class="step-num">1</div><div><h4>Foundation model representations</h4><p>Input speech is encoded by two frozen foundation models. We consider speech FMs (Wav2vec2, WavLM, Whisper) and multimodal FMs (LanguageBind, ImageBind), with LanguageBind + ImageBind found to be the strongest pair.</p></div></div><div class="method-step"><div class="step-num">2</div><div><h4>1D-CNN and max-pooling</h4><p>Representations from each FM are passed through a 1D-CNN layer (filter size 3, 32 filters) followed by max-pooling, identical to the CNN downstream baseline.</p></div></div><div class="method-step"><div class="step-num">3</div><div><h4>Flatten and project</h4><p>The pooled features from each branch are flattened and projected to a shared dimensional space to ensure dimensional consistency and reduce computational overhead.</p></div></div><div class="method-step"><div class="step-num">4</div><div><h4>Jensen-Shannon Divergence alignment</h4><p>The projected representations are normalized via softmax into probability distributions p and q, and JSD between them is minimized to align the two FM representation spaces in a stable, symmetric manner.</p></div></div><div class="method-step"><div class="step-num">5</div><div><h4>Concatenation and classification</h4><p>The aligned representations are concatenated and passed to a fully connected network (dense layer with 120 neurons, softmax output) for real-vs-spoof classification.</p></div></div></div><div class="method-figure"><img src="fig/Elderly.drawio.png" alt="BONSAI framework diagram" /><p class="method-figure-caption">Figure: The BONSAI framework. Each foundation model (FM) branch is processed by a 1D-CNN and max-pooling, flattened, and aligned via JSD before concatenation and classification.</p></div><p style="font-size:0.9rem; color:#444; margin-bottom:14px; font-weight:600;">Alignment Loss</p><div class="eq-box">L_JSD = (1/2) KL(p || m) + (1/2) KL(q || m),  where m = (1/2)(p + q)</div><p style="font-size:0.9rem; color:#444; margin-bottom:14px; font-weight:600;">Training Objective</p><div class="eq-box">L = lambda * L_CE + (1 - lambda) * L_JSD</div><p style="font-size:0.83rem; color:#666; margin-bottom:24px;">The classification loss L_CE and the JSD alignment loss L_JSD are jointly optimized, with lambda = 0.65 controlling the balance between the two. BONSAI has 3.8M-4.02M trainable parameters depending on the FM representation dimensionality.</p><div class="comp-grid"><div class="comp-card"><div class="comp-tag">Task</div><h4>Elderly CodecFake Detection</h4><p>Binary real-vs-spoof detection of neural-audio-codec-synthesized elderly speech.</p></div><div class="comp-card"><div class="comp-tag">Fusion</div><h4>JSD Alignment</h4><p>A novel use of Jensen-Shannon Divergence to align heterogeneous FM representation spaces.</p></div><div class="comp-card"><div class="comp-tag">Backbones</div><h4>LanguageBind + ImageBind</h4><p>Multimodal FMs whose cross-modal pretraining implicitly captures age-related cues.</p></div><div class="comp-card"><div class="comp-tag">Downstream</div><h4>1D-CNN + FCN</h4><p>Lightweight CNN and max-pooling per branch followed by a fully connected classifier.</p></div><div class="comp-card"><div class="comp-tag">Best Result</div><h4>1.66% Avg EER</h4><p>BONSAI with LanguageBind + ImageBind sets a new SOTA for the ECFD task.</p></div><div class="comp-card"><div class="comp-tag">Goal</div><h4>Robust elderly transfer</h4><p>Designed to close the cross-demographic generalization gap left by existing CF detectors.</p></div></div></div></section>
+<hr/>
+<section id="results"><div class="container"><h2 class="section-heading">Results</h2><p style="font-size:1rem; font-weight:700; margin-bottom:6px; color:#111;">Table 1: Generalization of SOTA CF detectors to elderly speech (zero-shot)</p><p class="results-note">Models trained on the prior CF benchmark (Lu et al.) generalize poorly to elderly speech. EER nearly doubles on the elderly subset of E2 (TIS) compared to the younger subset, indicating age-related degradation beyond simple distribution mismatch.</p><div class="table-wrap"><table><thead><tr><th rowspan="2">Model</th><th rowspan="2">E1 (SeniorTalk)</th><th colspan="2">E2 (TIS Corpus)</th></tr><tr><th>Young</th><th>Elderly</th></tr></thead><tbody><tr><td>AASIST</td><td>30.18</td><td>14.07</td><td>27.45</td></tr><tr><td>Wav2vec2-AASIST</td><td class="good">28.32</td><td class="good">12.89</td><td class="good">25.76</td></tr></tbody></table></div><p class="table-caption">EER (%, lower is better). E1: SeniorTalk, E2: TIS Corpus.</p><br/><p style="font-size:1rem; font-weight:700; margin-bottom:6px; color:#111;">Table 2: In-domain training and evaluation on ECFD</p><p class="results-note">Multimodal FMs (ImageBind, LanguageBind) consistently outperform speech-only FMs (Wav2vec2, WavLM, Whisper) under both AASIST and CNN downstream classifiers, supporting the hypothesis that cross-modal pretraining benefits ECFD.</p><div class="table-wrap"><table><thead><tr><th>Setting</th><th>E1</th><th>E2 (Elderly)</th><th>Avg</th></tr></thead><tbody><tr><td>AASIST (End-to-End)</td><td>14.54</td><td>13.66</td><td>14.10</td></tr><tr><td>Wav2vec2 + AASIST</td><td>11.76</td><td>11.02</td><td>11.39</td></tr><tr><td>WavLM + AASIST</td><td>11.34</td><td>10.66</td><td>11.00</td></tr><tr><td>Whisper + AASIST</td><td>10.12</td><td>9.86</td><td>9.99</td></tr><tr><td>ImageBind + AASIST</td><td class="good">6.53</td><td class="good">5.79</td><td class="good">6.16</td></tr><tr><td>LanguageBind + AASIST</td><td class="good">6.48</td><td class="good">5.21</td><td class="good">5.85</td></tr><tr><td>Wav2vec2 + CNN</td><td>11.02</td><td>10.29</td><td>10.66</td></tr><tr><td>WavLM + CNN</td><td>10.67</td><td>9.13</td><td>9.90</td></tr><tr><td>Whisper + CNN</td><td>8.46</td><td>8.14</td><td>8.30</td></tr><tr><td>ImageBind + CNN</td><td class="good">5.41</td><td class="good">5.26</td><td class="good">5.34</td></tr><tr><td>LanguageBind + CNN</td><td class="good">4.81</td><td class="good">4.30</td><td class="good">4.56</td></tr></tbody></table></div><p class="table-caption">EER (%, lower is better). Avg is the average EER across E1 and E2 (Elderly).</p><br/><p style="font-size:1rem; font-weight:700; margin-bottom:6px; color:#111;">Table 3: BONSAI fusion vs. concatenation</p><p class="results-note">BONSAI consistently outperforms simple concatenation across all FM pairs, with the largest gains for multimodal and speech+multimodal combinations. The best pair, ImageBind + LanguageBind, achieves a new SOTA average EER of 1.66%.</p><div class="table-wrap"><table><thead><tr><th rowspan="2">Pair</th><th colspan="3">Concatenation</th><th colspan="3">BONSAI</th></tr><tr><th>E1</th><th>E2 (Elderly)</th><th>Avg</th><th>E1</th><th>E2 (Elderly)</th><th>Avg</th></tr></thead><tbody><tr><td>Wav2vec2 + WavLM</td><td>9.36</td><td>9.01</td><td>9.18</td><td>7.54</td><td>6.97</td><td>7.26</td></tr><tr><td>Wav2vec2 + Whisper</td><td>7.17</td><td>6.63</td><td>6.90</td><td>6.24</td><td>5.64</td><td>5.94</td></tr><tr><td>Wav2vec2 + ImageBind</td><td>5.20</td><td>4.79</td><td>5.00</td><td>4.87</td><td>3.22</td><td>4.05</td></tr><tr><td>Wav2vec2 + LanguageBind</td><td>4.47</td><td>4.22</td><td>4.35</td><td>4.00</td><td>3.76</td><td>3.88</td></tr><tr><td>WavLM + Whisper</td><td>7.94</td><td>7.35</td><td>7.65</td><td>5.68</td><td>5.17</td><td>5.43</td></tr><tr><td>WavLM + ImageBind</td><td>5.12</td><td>4.72</td><td>4.92</td><td>4.36</td><td>4.09</td><td>4.23</td></tr><tr><td>WavLM + LanguageBind</td><td>4.86</td><td>4.43</td><td>4.65</td><td>3.92</td><td>3.56</td><td>3.74</td></tr><tr><td>Whisper + ImageBind</td><td>4.51</td><td>4.02</td><td>4.27</td><td>3.23</td><td>2.95</td><td>3.09</td></tr><tr><td>Whisper + LanguageBind</td><td>3.78</td><td>3.14</td><td>3.46</td><td>2.78</td><td>2.36</td><td>2.57</td></tr><tr><td><strong>ImageBind + LanguageBind</strong></td><td>3.01</td><td>2.50</td><td>2.76</td><td class="best">1.80</td><td class="best">1.51</td><td class="best">1.66</td></tr></tbody></table></div><p class="table-caption">EER (%, lower is better). Avg is the average EER across E1 and E2 (Elderly).</p></div></section>
+<hr/>
+<section id="datasets"><div class="container"><h2 class="section-heading">Dataset and Codecs</h2><p style="color:#555; font-size:0.93rem; margin-bottom:20px; line-height:1.7;">The ECF dataset pairs authentic elderly speech with codec-resynthesized counterparts produced by 14 neural audio codec variants spanning two languages.</p><div class="ds-grid"><div class="ds-card"><span class="ds-lang">Chinese · Elderly Conversational</span><h4>SeniorTalk (E1)</h4><p>Mandarin conversational speech from super-aged seniors (75-85), 55.53 hours of spontaneous dialogue from 202 speakers across 16 provinces. 60,029 real utterances.</p><span class="ds-role role-src">Source recordings</span></div><div class="ds-card"><span class="ds-lang">English · Mixed-Age</span><h4>TIS Corpus (E2)</h4><p>1,152 utterances from 96 speakers spanning younger (18-45) and older (60+) adults across White, Black, and South Asian backgrounds. 720 real elderly utterances used for ECFD.</p><span class="ds-role role-src">Source recordings</span></div><div class="ds-card"><span class="ds-lang">8 Codec Families · 14 Variants</span><h4>Neural Audio Codecs</h4><p>DAC (16/24/44 kHz), EnCodec (24/48 kHz), SoundStream (16 kHz), SpeechTokenizer (16 kHz), FunCodec (16 kHz), AudioDec (28/48 kHz), SNAC (24/32/44 kHz), MIMI (24 kHz).</p><span class="ds-role role-codec">Codec backbones</span></div><div class="ds-card"><span class="ds-lang">Resulting Dataset</span><h4>Elderly-CodecFake (ECF)</h4><p>60,749 real elderly utterances paired with 850,486 NAC-generated counterparts across all 14 codec variants, English and Chinese.</p><span class="ds-role role-codec">Real + Spoof pairs</span></div></div></div></section>
+<hr/>
+<section id="samples"><div class="container"><h2 class="section-heading">Audio Samples</h2><p class="results-note">Sample rows below are loaded from <code>audio/manifest.js</code>. Each row pairs a real elderly recording with its codec-generated counterpart.</p><div class="sample-table-wrap"><table><thead><tr><th>Codec</th><th>Ground Truth ID</th><th>GT Speech</th><th>Generated Speech</th><th>Source</th></tr></thead><tbody id="samples-tbody"></tbody></table></div></div></section>
+<hr/>
+<section id="citation"><div class="container"><h2 class="section-heading">Citation</h2><p style="color:#555; font-size:0.93rem; margin-bottom:18px;">If you use the ECF dataset or BONSAI, please cite the paper as follows:</p><div class="bibtex-wrap" id="bib"><button class="copy-btn" onclick="copyBib()">Copy BibTeX</button><span style="color:#888">@inproceedings</span>{ecfd-interspeech2026,
+  <span style="color:#3273dc">title</span>     = {Bridging the Age Gap: Towards Detecting Neural Audio Codec Synthesized Elderly Speech Deepfake},
+  <span style="color:#3273dc">author</span>    = {Phukan, Orchid Chetia and Girish and Akhtar, Mohd Mujtaba and Lee, Chi-Chun},
+  <span style="color:#3273dc">booktitle</span> = {Proceedings of Interspeech 2026},
+  <span style="color:#3273dc">year</span>      = {2026},
+  <span style="color:#3273dc">pages</span>     = {TBD},
+}</div><p style="font-size:0.8rem; color:#999; margin-top:10px;">Update page numbers in the citation once the proceedings version is finalized.</p></div></section>
+<footer><div class="container"><p style="margin-bottom:6px;"><strong>ElderlyCodecFake</strong> · Elderly CodecFake Detection (ECFD) for pathological-free elderly speech</p><p>ECF benchmark · BONSAI · The full dataset and code will be released after the double-blind review process</p><p style="margin-top:10px; font-size:0.78rem;">Accepted to Interspeech 2026.</p></div></footer>
+<script>
+  const MANIFEST_SRC = "audio/manifest.js";
+  let manifestData = [];
+  function escapeHtml(str) { return String(str).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
+  function renderSampleMessage(message) {
+    const tbody = document.getElementById("samples-tbody");
+    tbody.innerHTML = `<tr><td colspan="5">${escapeHtml(message)}</td></tr>`;
+  }
+  function renderSamples() {
+    const rows = manifestData;
+    const tbody = document.getElementById("samples-tbody");
+    tbody.innerHTML = "";
+    if (!rows.length) {
+      renderSampleMessage("No samples found.");
+      return;
+    }
+    for (const item of rows) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(item.codec || "-")}</td>
+        <td>${escapeHtml(item.gt_id || "-")}</td>
+        <td>${item.gt_url ? `<audio controls preload="none"><source src="${escapeHtml(item.gt_url)}" type="audio/wav"></audio>` : `<span class="missing">Missing</span>`}</td>
+        <td>${item.gen_url ? `<audio controls preload="none"><source src="${escapeHtml(item.gen_url)}" type="audio/wav"></audio>` : `<span class="missing">Missing</span>`}</td>
+        <td><span class="condition-pill">${escapeHtml(item.source || "-")}</span></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+  function copyBib() {
+    const raw = `@inproceedings{ecfd-interspeech2026,
+  title     = {Bridging the Age Gap: Towards Detecting Neural Audio Codec Synthesized Elderly Speech Deepfake},
+  author    = {Phukan, Orchid Chetia and Girish and Akhtar, Mohd Mujtaba and Lee, Chi-Chun},
+  booktitle = {Proceedings of Interspeech 2026},
+  year      = {2026},
+  pages     = {TBD}
+}`;
+    navigator.clipboard.writeText(raw).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      const original = btn.textContent;
+      btn.textContent = 'Copied';
+      btn.style.background = '#1a7f3c';
+      btn.style.color = '#fff';
+      btn.style.borderColor = '#1a7f3c';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 2000);
+    });
+  }
+  (function loadManifest() {
+    const script = document.createElement("script");
+    script.src = MANIFEST_SRC;
+    script.onload = () => {
+      const raw = Array.isArray(window.MANIFEST_RAW) ? window.MANIFEST_RAW : null;
+      if (!raw) {
+        renderSampleMessage("Manifest loaded, but window.MANIFEST_RAW is missing.");
+        return;
+      }
+      manifestData = raw;
+      renderSamples();
+    };
+    script.onerror = () => {
+      renderSampleMessage(`Failed to load manifest at ${MANIFEST_SRC}.`);
+    };
+    document.body.appendChild(script);
+  })();
+</script>
+</body>
+</html>
