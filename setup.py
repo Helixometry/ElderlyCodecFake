@@ -7,7 +7,6 @@ setup(
     name="ElderlyCodecFake",
     version="1.0.0",
     author="Orchid Chetia Phukan, Girish, Mohd Mujtaba Akhtar, Chi-Chun Lee",
-    author_email="girish281003@gmail.com",
     description="Detecting Neural Audio Codec Synthesized Elderly Speech Deepfakes",
     long_description=long_description,
     long_description_content_type="text/markdown",
