@@ -218,7 +218,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - **Orchid Chetia Phukan**
 - **Girish** - girish281003@gmail.com
-- **Mohd Mujtaba Akhtar**
+- **Mohd Mujtaba Akhtar** - mmakhtar.research@gmail.com
 - **Chi-Chun Lee**
 
 ## Acknowledgments
